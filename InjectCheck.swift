@@ -2,7 +2,7 @@
 //  InjectCheck.swift
 //  InjectCheck
 //
-//  Created by itsatrap on 9/30/20.
+//  Created by D00mfist
 //
 
 import Foundation
