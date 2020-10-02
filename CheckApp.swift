@@ -2,7 +2,7 @@
 //  CheckApp.swift
 //  InjectCheck
 //
-//  Created by D00mfist
+//  Created by itsatrap on 9/30/20.
 //
 
 import Foundation
@@ -43,7 +43,7 @@ class CheckApp {
                let hardenedRuntimeFlag: UInt32 = 0x10000
             print(String(format: "The " + applicationName + " application has a Hardened runtime Value of %llX ",signingFlags))
              if (signingFlags & hardenedRuntimeFlag) != hardenedRuntimeFlag {
-                print("Hardened runtime is not set for the " + applicationName + " application. Nice and easy injection option: use 'DYLD_INSERT_LIBRARIES'. (e.g.: DYLD_INSERT_LIBRARIES=/PATH_TO/evil.dylib /Applications/Calculator.app/Contents/MacOS/Calculator &)")
+                print("Hardened runtime is not set for the " + applicationName + " application. Nice and easy injection option: use 'DYLD_INSERT_LIBRARIES'. (e.g.: DYLD_INSERT_LIBRARIES=/PATH_TO/evil.dylib /Applications/Calculator.app/Contents/MacOS/Calculator &) or Attempt injection with listtasks/libinject in poseidon")
                    return false
                }
            } else {
@@ -65,20 +65,20 @@ class CheckApp {
             
            //Check for "com.apple.security.cs.allow-dyld-environment-variables"  & "com.apple.security.cs.disable-library-validation" entitlements
              if disableDylbkeyExists && allowDylibkeyExsists {
-                print("The " + applicationName + " application contains the 'com.apple.security.cs.disable-library-validation' and 'com.apple.security.cs.allow-dyld-environment-variables' entitlements are present. Nice and easy injection option: use 'DYLD_INSERT_LIBRARIES'. (e.g.: DYLD_INSERT_LIBRARIES=/PATH_TO/evil.dylib /Applications/Calculator.app/Contents/MacOS/Calculator &)")
+                print("The " + applicationName + " application contains the 'com.apple.security.cs.disable-library-validation (allows any dylib)' and 'com.apple.security.cs.allow-dyld-environment-variables' (allows DYLD_INSERT_LIBRARIES abuses) entitlements are present. Nice and easy injection option: use 'DYLD_INSERT_LIBRARIES'. (e.g.: DYLD_INSERT_LIBRARIES=/PATH_TO/evil.dylib /Applications/Calculator.app/Contents/MacOS/Calculator &)")
              }
             
             //Check for com.apple.security.cs.allow-unsigned-executable-memory (allows shellcode injection) and com.apple.security.cs.disable-library-validation (allows any dylib)
                     if unsignMemkeyExists && allowDylibkeyExsists {
-                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' (allows shellcode injection) and 'com.apple.security.cs.allow-dyld-environment-variables' (allows any dylib) entitlements are present. Use https://github.com/KJCracks/yololib (e.g.: './yololib /Applications/Dropbox.app/Contents/MacOS/Dropbox inject.dylib')")
+                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' (allows shellcode injection) and 'com.apple.security.cs.allow-dyld-environment-variables' (allows DYLD_INSERT_LIBRARIES abuses) entitlements are present. Code injection is possible but requires some creativey that cannot be automated.")
                     } else if unsignMemkeyExists && disableDylbkeyExists {
-                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' and 'com.apple.security.cs.disable-library-validation' entitlements. Use https://github.com/KJCracks/yololib (e.g.: './yololib /Applications/Dropbox.app/Contents/MacOS/Dropbox inject.dylib')")
+                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' (allows shellcode injection) and 'com.apple.security.cs.disable-library-validation' (allows library injection) entitlements. Code injection is possible but requres some creativey that cannot be automated. Look into dylib hijacks or proxying")
                     }  else if unsignMemkeyExists && allowDylibkeyExsists == false {
-                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' entitlement is present. Code injection is possible but requres some creativey that cannot be automated.")
+                        print("The " + applicationName + " application contains the 'com.apple.security.cs.allow-unsigned-executable-memory' entitlement is present. Code injection is possible but requires some creativety that cannot be automated.")
                         }
             //check for just get-task-allow
             if getTaskkeyExists {
-                print("The " + applicationName + " application contains the 'com.apple.security.get-task-allow' entitlements is present. Due to this we can obtain a task port without root. Use https://github.com/KJCracks/yololib or libinject in poseidon")
+                print("The " + applicationName + " application contains the 'com.apple.security.get-task-allow' entitlements is present. Attempt injection with listtasks/libinject in poseidon")
             }
             
            return true
